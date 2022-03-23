@@ -15,7 +15,7 @@
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
-  padding: 0 15px;
+  padding: 0 15px 50px 0;
 }
 
 .photo-card {

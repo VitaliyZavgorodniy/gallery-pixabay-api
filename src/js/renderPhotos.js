@@ -7,7 +7,7 @@ const galleryLigthbox = new SimpleLightbox(".gallery a", {
   captionDelay: 250,
 });
 
-export const renderPhotos = (data) => {
+export const renderPhotos = async (data) => {
   const elementHTML = data
     .map(
       ({

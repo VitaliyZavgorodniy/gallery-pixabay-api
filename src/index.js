@@ -1,5 +1,6 @@
 import "./css/normalize.css";
 import "./css/styles.css";
+import "regenerator-runtime/runtime";
 
 import debounce from "lodash.debounce";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
@@ -30,16 +31,16 @@ const handleScroll = () => {
   const { offsetHeight } = document.body;
   const { hits, totalHits } = state;
 
-  if (innerHeight + scrollY >= offsetHeight && hits.length < totalHits) {
+  if (innerHeight + scrollY >= offsetHeight - 200 && hits.length < totalHits) {
     state.page++;
     renderGallery();
   }
 };
 
-const renderGallery = () => {
+const renderGallery = async () => {
   const { query, page } = state;
 
-  fetchPhotos(query, page)
+  await fetchPhotos(query, page)
     .then((res) => {
       const { data } = res;
 
