@@ -20,7 +20,9 @@ const handleSearch = (e) => {
   fetchData.page = 1;
 
   fetchPhotos(value, 1)
-    .then((data) => {
+    .then((res) => {
+      const { data } = res;
+
       if (data.hits.length) {
         Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
@@ -44,7 +46,9 @@ window.onscroll = () => {
     fetchData.page++;
 
     fetchPhotos(fetchData.value, fetchData.page)
-      .then((data) => {
+      .then((res) => {
+        const { data } = res;
+
         if (data.hits.length) {
           fetchData.hits = fetchData.hits.concat(data.hits);
 
