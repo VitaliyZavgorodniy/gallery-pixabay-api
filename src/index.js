@@ -8,28 +8,50 @@ import { fetchPhotos } from "./js/fetchPhotos";
 import { renderPhotos } from "./js/renderPhotos";
 
 const inputSearch = document.querySelector("[name='searchQuery']");
-const fetchData = {
-  value: null,
+
+const state = {
+  query: null,
   hits: [],
   totalHits: 0,
   page: 1,
 };
 
 const handleSearch = (e) => {
-  const { value } = e.target;
-  fetchData.page = 1;
+  state.query = e.target.value.trim();
 
-  fetchPhotos(value, 1)
+  if (state.query.length) {
+    state.page = 1;
+    renderGallery();
+  }
+};
+
+const handleScroll = () => {
+  const { innerHeight, scrollY } = window;
+  const { offsetHeight } = document.body;
+  const { hits, totalHits } = state;
+
+  if (innerHeight + scrollY >= offsetHeight && hits.length < totalHits) {
+    state.page++;
+    renderGallery();
+  }
+};
+
+const renderGallery = () => {
+  const { query, page } = state;
+
+  fetchPhotos(query, page)
     .then((res) => {
       const { data } = res;
 
       if (data.hits.length) {
-        Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        if (page === 1) {
+          state.totalHits = data.totalHits;
+          state.hits = data.hits;
 
-        fetchData.value = value;
-        fetchData.totalHits = data.totalHits;
-        fetchData.hits = data.hits;
-        renderPhotos(fetchData.hits);
+          Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        } else state.hits = state.hits.concat(data.hits);
+
+        renderPhotos(state.hits);
       } else
         Notify.failure(
           "Sorry, there are no images matching your search query. Please try again."
@@ -38,25 +60,5 @@ const handleSearch = (e) => {
     .catch((e) => console.error(e));
 };
 
-window.onscroll = () => {
-  if (
-    window.innerHeight + window.scrollY >= document.body.offsetHeight &&
-    fetchData.hits.length < fetchData.totalHits
-  ) {
-    fetchData.page++;
-
-    fetchPhotos(fetchData.value, fetchData.page)
-      .then((res) => {
-        const { data } = res;
-
-        if (data.hits.length) {
-          fetchData.hits = fetchData.hits.concat(data.hits);
-
-          renderPhotos(fetchData.hits);
-        }
-      })
-      .catch((e) => console.error(e));
-  }
-};
-
 inputSearch.addEventListener("input", debounce(handleSearch, 500));
+document.addEventListener("scroll", handleScroll);
