@@ -4,7 +4,7 @@ const API_KEY = "18651709-2ed9926c287754060d45cde83";
 const API_URL = "https://pixabay.com/api/";
 
 const options = {
-  per_page: 40,
+  per_page: 20,
   image_type: "photo",
   orientation: "horizontal",
   safesearch: true,

@@ -8,6 +8,7 @@ import { fetchPhotos } from "./js/fetchPhotos";
 import { renderPhotos } from "./js/renderPhotos";
 
 const form = document.querySelector("#search-form");
+const galleryBox = document.querySelector(".gallery");
 
 const state = {
   query: null,
@@ -17,8 +18,9 @@ const state = {
 };
 
 const observer = new IntersectionObserver((entries, observer) => {
+  const { hits, totalHits } = state;
   const lastCard = entries[0];
-  if (!lastCard.isIntersecting) return;
+  if (!lastCard.isIntersecting || hits.length === totalHits) return;
 
   observer.unobserve(lastCard.target);
 
@@ -36,6 +38,7 @@ const handleSearch = (e) => {
   state.query = searchQuery.value.trim();
 
   if (state.query.length) {
+    galleryBox.innerHTML = "";
     state.page = 1;
     renderGallery();
   }
@@ -55,7 +58,7 @@ const renderGallery = async () => {
           Notify.success(`Hooray! We found ${data.totalHits} images.`);
         }
 
-        state.hits.concat(data.hits);
+        state.hits = state.hits.concat(data.hits);
         renderPhotos(data.hits);
 
         observer.observe(document.querySelector(".photo-card:last-child"));
