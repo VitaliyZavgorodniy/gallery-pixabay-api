@@ -1,4 +1,3 @@
-import { Notify } from "notiflix/build/notiflix-notify-aio";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
@@ -7,7 +6,7 @@ const galleryLigthbox = new SimpleLightbox(".gallery a", {
   captionDelay: 250,
 });
 
-export const renderPhotos = async (data) => {
+export const renderPhotos = (data) => {
   const elementHTML = data
     .map(
       ({
@@ -44,7 +43,7 @@ export const renderPhotos = async (data) => {
     )
     .join("");
 
-  galleryBox.innerHTML = elementHTML;
+  galleryBox.insertAdjacentHTML("beforeend", elementHTML);
 
   galleryLigthbox.refresh();
 };
